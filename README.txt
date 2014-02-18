@@ -1,3 +1,6 @@
+Zstort - This is a multipurpose audio plugin developed to learn DSP
+==================
+
 WDL / IPlug - Oli Larkin Edition
 
 IPlug is a simple-to-use C++ framework for developing cross platform audio plugins and targeting multiple plugin APIs with the same code. Originally developed by Schwa/Cockos, IPlug has been enhanced by various contributors. IPlug depends on WDL, and that is why this project is called WDL-OL,  although most of the differences from Cockos' WDL are to do with IPlug.
