@@ -20,6 +20,25 @@
 *.xcschememanagement.plist
 build-*
 /IPlugExamples/*/*.vcxproj.user
+/IPlugExamples/IPlugChunks/
+/IPlugExamplesIPlugControls/
+/IPlugExamplesIPlugConvoEngine/
+/IPlugExamplesIPlugDistortion/
+/IPlugExamplesIPlugEEL/
+/IPlugExamplesIPlugEffect/
+/IPlugExamplesIPlugGUIResize/
+/IPlugExamplesIPlugHostDetect/
+/IPlugExamplesIPlugMonoSynth/
+/IPlugExamplesIPlugMouseTest/
+/IPlugExamplesIPlugMultiChannel/
+/IPlugExamplesIPlugMultiTargets/
+/IPlugExamplesIPlugOpenGL/
+/IPlugExamplesIPlugPlush/
+/IPlugExamplesIPlugPolySynth/
+/IPlugExamplesIPlugResampler/
+/IPlugExamplesIPlugSideChain/
+/IPlugExamplesIPlugText/
+
 
 PCH/*
 VST3_SDK/*
