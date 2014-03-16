@@ -290,6 +290,7 @@
     <ClCompile Include="..\..\WDL\rtaudiomidi\RtMidi.cpp" />
     <ClCompile Include="app_wrapper\app_dialog.cpp" />
     <ClCompile Include="app_wrapper\app_main.cpp" />
+    <ClCompile Include="AudioProcessor.cpp" />
     <ClCompile Include="Zstort.cpp" />
   </ItemGroup>
   <ItemGroup>

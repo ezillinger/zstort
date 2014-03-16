@@ -4,6 +4,7 @@
 #include "IPlug_include_in_plug_hdr.h"
 #include "sinewavegen.h"
 #include "fastsine.h"
+#include "AudioProcessor.h"
 
 class Zstort : public IPlug
 {
@@ -24,6 +25,11 @@ private:
   int mBits;
   double mstepSizeBC;
   FastSineGenerator * zWave;
+  DistortionProcessor * distortion;
+  BitCrushProcessor * bitCrusher;
+  SampleRateReductionProcessor * rateReducer;
+
+  int distIdx;
   
 };
 

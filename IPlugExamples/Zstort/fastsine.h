@@ -36,7 +36,7 @@ public:
 		}
 		
 		//double poop = 2. * PI * phase * freq / (sampleRate);
-		//DBGMSG("poop = %d \n", poop);
+		
 		return sin(2. * PI * phase++ * freq / (sampleRate));
 		
 	}
