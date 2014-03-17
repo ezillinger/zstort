@@ -18,16 +18,10 @@ public:
 
 private:
   double mGain;
-  double mTremGain;
-  double mTremFreq;
-  double mDist;
-  int mRate;
-  int mBits;
-  double mstepSizeBC;
-  FastSineGenerator * zWave;
   DistortionProcessor * distortion;
   BitCrushProcessor * bitCrusher;
   SampleRateReductionProcessor * rateReducer;
+  TremoloProcessor * trem;
 
   int distIdx;
   

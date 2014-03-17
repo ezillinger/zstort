@@ -13,7 +13,7 @@ const int kNumPrograms = 1;
 enum EParams
 {
   kGain = 0,
-  kTremGain,
+  kTremDepth,
   kTremFreq,
   kDist,
   kBits,
@@ -29,8 +29,8 @@ enum ELayout
   kGainX = 300,
   kGainY = 200,
 
-  kTremGainX = 100,
-  kTremGainY = 100,
+  kTremDepthX = 100,
+  kTremDepthY = 100,
 
   kTremFreqX = 200,
   kTremFreqY = 100,
@@ -56,8 +56,8 @@ Zstort::Zstort(IPlugInstanceInfo instanceInfo)
   GetParam(kGain)->InitDouble("Gain", 8., 0., 100.0, 0.01, "%");
   GetParam(kGain)->SetShape(2.);
 
-  GetParam(kTremGain)->InitDouble("TremDepth", 100., 0., 100.0, 0.01, "%");
-  GetParam(kTremGain)->SetShape(2.);
+  GetParam(kTremDepth)->InitDouble("TremDepth", 100., 0., 100.0, 0.01, "%");
+  GetParam(kTremDepth)->SetShape(2.);
 
   GetParam(kTremFreq)->InitDouble("TremFreq", 4., 0.01, 15, 0.01, "hz");
   //GetParam(kTremFreq)->SetShape(2.);
@@ -77,7 +77,7 @@ Zstort::Zstort(IPlugInstanceInfo instanceInfo)
   IText textProps3(14, &COLOR_RED, "Arial", IText::kStyleItalic, IText::kAlignNear, 0, IText::kQualityDefault);
   pGraphics->AttachControl(new ITextControl(this, IRECT(kDistX, kDistY -25, 200, 80), &textProps3, "Distortion"));
   pGraphics->AttachControl(new ITextControl(this, IRECT(kGainX, kGainY - 25, 200, 80), &textProps3, "Gain"));
-  pGraphics->AttachControl(new ITextControl(this, IRECT(kTremGainX, kTremGainY - 25, 200, 80), &textProps3, "Tremolo Depth"));
+  pGraphics->AttachControl(new ITextControl(this, IRECT(kTremDepthX, kTremDepthY - 25, 200, 80), &textProps3, "Tremolo Depth"));
   pGraphics->AttachControl(new ITextControl(this, IRECT(kTremFreqX, kTremFreqY - 25, 200, 80), &textProps3, "Tremolo\nFrequency"));
   pGraphics->AttachControl(new ITextControl(this, IRECT(kRateX, kRateY - 25, 200, 80), &textProps3, "Sample Rate\nReduction"));
   pGraphics->AttachControl(new ITextControl(this, IRECT(kBitsX, kBitsY - 25, 200, 80), &textProps3, "BitCrusher"));
@@ -89,7 +89,7 @@ Zstort::Zstort(IPlugInstanceInfo instanceInfo)
   IBitmap knob = pGraphics->LoadIBitmap(KNOB_ID, KNOB_FN, kKnobFrames);
 
   pGraphics->AttachControl(new IKnobMultiControl(this, kGainX, kGainY, kGain, &knob));
-  pGraphics->AttachControl(new IKnobMultiControl(this, kTremGainX, kTremGainY, kTremGain, &knob));
+  pGraphics->AttachControl(new IKnobMultiControl(this, kTremDepthX, kTremDepthY, kTremDepth, &knob));
   pGraphics->AttachControl(new IKnobMultiControl(this, kTremFreqX, kTremFreqY, kTremFreq, &knob));
   pGraphics->AttachControl(new IKnobMultiControl(this, kDistX, kDistY, kDist, &knob));
   pGraphics->AttachControl(new IKnobMultiControl(this, kBitsX, kBitsY, kBits, &knob));
@@ -100,10 +100,10 @@ Zstort::Zstort(IPlugInstanceInfo instanceInfo)
   //MakePreset("preset 1", ... );
   MakeDefaultPreset((char *) "-", kNumPrograms);
 
-  this->zWave = new FastSineGenerator(440.);
   this->distortion = new DistortionProcessor(1.);
   this->bitCrusher = new BitCrushProcessor(32);
   this->rateReducer = new SampleRateReductionProcessor(1);
+  this->trem = new TremoloProcessor(4., 1, 2, GetSampleRate());
 }
 
 Zstort::~Zstort() {}
@@ -129,9 +129,11 @@ void Zstort::ProcessDoubleReplacing(double** inputs, double** outputs, int nFram
 	{
 		//apply tremolo
 
-		tremTemp = zWave->GetNextSample();
-		temp1 = *in1 * fmin(0.5*(tremTemp + 1.) + mTremGain, 1);
-		temp2 = *in2 * fmin(0.5*(tremTemp + 1.) + mTremGain, 1);
+		temp1 = *in1;
+		temp2 = *in2;
+
+		trem->process(&temp1);
+		trem->process(&temp2);
 
 		//apply distortion
 
@@ -174,17 +176,16 @@ void Zstort::OnParamChange(int paramIdx)
       mGain = GetParam(kGain)->Value() / 10;
       break;
 
-	case kTremGain:
-		mTremGain = GetParam(kTremGain)->Value() / 100;
+	case kTremDepth:
+		trem->setDepth(GetParam(kTremDepth)->Value() / 100);
 		break;
 
 	case kTremFreq:
-		mTremFreq = GetParam(kTremFreq)->Value();
-		zWave->SetFreq(mTremFreq);
+		trem->setRate(GetParam(kTremFreq)->Value());
 		break;
 
 	case kDist:
-		//doesn't redraw correctly
+		//doesn't redraw correctly, scroll mousewheel on text to update
 		distortion->setLevel(GetParam(kDist)->Value() / 100.);
 		tP = (ITextControl *) this->GetGUI()->GetControl(distIdx);
 		sprintf(charBuffer, "Distortion: %f", distortion->getLevel());

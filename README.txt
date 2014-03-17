@@ -1,4 +1,8 @@
 Zstort - This is a multipurpose audio plugin developed to learn DSP
+
+This repo contains the entire wdl-ol repo. All of the code unique to this project is in IPlugExamples/Zstort
+
+
 ==================
 
 WDL / IPlug - Oli Larkin Edition

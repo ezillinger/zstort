@@ -21,6 +21,7 @@ public:
 	virtual void enable();
 	virtual void disable();
 	AudioProcessor();
+	virtual ~AudioProcessor();
 
 };
 
@@ -63,9 +64,11 @@ public:
 
 class TremoloProcessor : public AudioProcessor{
 protected:
-	int samplesPerPhase;
+	int samplesPerPhase; //number of samples before phase increment
+	int sampleCounter; //current number of samples without phase increment
 	double rate;
 	double depth;
+	double lastAmplitude; 
 	FastSineGenerator * osc;
 
 public:
@@ -78,7 +81,8 @@ public:
 	int getSamplesPerPhase();
 
 	
-	TremoloProcessor(double rate, double depth, int samplesPerPhase = 1);
+	TremoloProcessor(double rate, double depth, int samplesPerPhase = 1, int sampleRate = 44100);
+	~TremoloProcessor();
 
 };
 #endif
